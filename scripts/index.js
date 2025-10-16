@@ -38,6 +38,9 @@ const popupInputTypeName = editPopup.querySelector(".popup__input_type_name");
 const popupInputTypeDescription = editPopup.querySelector(
   ".popup__input_type_description"
 );
+const imagePopup = document.querySelector("#image-popup");
+const popupImage = document.querySelector(".popup__image");
+const popupCaption = document.querySelector(".popup__caption");
 function openModal(modal) {
   modal.classList.add("popup_is-opened");
 }
@@ -95,6 +98,13 @@ function getCardElement(
 
   cardDeleteButton.addEventListener("click", () => {
     cardElement.remove();
+  });
+
+  cardImage.addEventListener("click", () => {
+    popupCaption.textContent = name;
+    popupImage.src = link;
+    popupImage.alt = name;
+    openModal(imagePopup);
   });
 
   return cardElement;
