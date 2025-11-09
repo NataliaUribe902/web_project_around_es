@@ -120,6 +120,8 @@ editProfileForm.addEventListener("submit", (e) => {
   closeModal(editPopup);
 });
 
+console.log("Botón agregar tarjeta:", profileAddButton);
+console.log("Popup nuevo lugar:", newCardPopup);
 profileAddButton.addEventListener("click", () => {
   newCardForm.reset();
   newCardInputs.forEach((input) => hideInputError(newCardForm, input));
@@ -175,3 +177,12 @@ function renderCard(name, link, container) {
 initialCards.forEach((item) =>
   renderCard(item.name, item.link, cardsContainer)
 );
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    const openedPopup = document.querySelector(".popup_is-opened");
+    if (openedPopup) {
+      closeModal(openedPopup);
+    }
+  }
+});

@@ -111,9 +111,11 @@
               class="popup__input popup__input_type_card-name"
               name="place-name"
               placeholder="Título"
-              required
               type="text"
             />
+            <!-- Span de error para el campo de título -->
+            <span class="popup__error place-name-error"></span>
+
             <input
               class="popup__input popup__input_type_url"
               name="link"
@@ -121,6 +123,9 @@
               required
               type="url"
             />
+            <!-- Span de error para el campo de enlace -->
+            <span class="popup__error link-error"></span>
+
             <button class="button popup__button" type="submit">Crear</button>
           </form>
         </div>
