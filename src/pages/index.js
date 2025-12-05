@@ -6,13 +6,11 @@ import { PopupWithForm } from "../components/PopupWithForm.js";
 import { UserInfo } from "../components/UserInfo.js";
 import { FormValidator } from "../components/FormValidator.js";
 
-// ---------- User Info ----------
 const userInfo = new UserInfo({
   nameSelector: ".profile__title",
   jobSelector: ".profile__description",
 });
 
-// ---------- Popups ----------
 const imagePopup = new PopupWithImage("#image-popup");
 imagePopup.setEventListeners();
 
@@ -32,7 +30,6 @@ const addCardPopup = new PopupWithForm("#new-card-popup", (formData) => {
 });
 addCardPopup.setEventListeners();
 
-// ---------- Crear Card ----------
 function createCard(name, link) {
   const card = new Card(
     name,
@@ -46,7 +43,6 @@ function createCard(name, link) {
   return card.getView();
 }
 
-// ---------- Section ----------
 const cardsSection = new Section(
   {
     items: initialCards,
@@ -60,7 +56,6 @@ const cardsSection = new Section(
 
 cardsSection.renderItems();
 
-// ---------- Listeners ----------
 document
   .querySelector(".profile__edit-button")
   .addEventListener("click", () => {
@@ -75,7 +70,6 @@ document.querySelector(".profile__add-button").addEventListener("click", () => {
   addCardPopup.open();
 });
 
-// ---------- Validación ----------
 const selectors = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
