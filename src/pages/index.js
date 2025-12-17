@@ -138,6 +138,24 @@ document.querySelectorAll(selectors.formSelector).forEach((formElement) => {
   validator.enableValidation();
 });
 
+const editAvatarPopup = new PopupWithForm("#edit-avatar-popup", (formData) => {
+  api
+    .updateAvatar(formData.avatar)
+    .then((userData) => {
+      profileImage.src = userData.avatar;
+      editAvatarPopup.close();
+    })
+    .catch(console.log);
+});
+
+editAvatarPopup.setEventListeners();
+
+document
+  .querySelector(".profile__avatar-edit")
+  .addEventListener("click", () => {
+    editAvatarPopup.open();
+  });
+
 api
   .getUserInfo()
   .then((userData) => {

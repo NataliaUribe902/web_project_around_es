@@ -78,6 +78,29 @@
   opacity: 0.6;
 }
 
+.profile__image-container {
+  position: relative;
+}
+
+.profile__avatar-edit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  background-image: url("../../images/Vector.svg");
+  background-repeat: no-repeat;
+  background-position: calc(50% - 12px) center;
+  background-size: 26px 26px;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.profile__image-container:hover .profile__avatar-edit {
+  opacity: 1;
+}
+
 @media screen and (max-width: 959px) {
   .profile__info {
     grid-template-columns: auto;
