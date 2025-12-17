@@ -11,8 +11,8 @@ export class Card {
     this._id = data._id;
     this._isLiked = data.isLiked;
 
-    this._ownerId = data.owner; // 👈 del servidor
-    this._userId = data.userId; // 👈 usuario actual
+    this._ownerId = data.owner;
+    this._userId = data.userId;
 
     this._templateSelector = templateSelector;
     this._handleImageClick = handleImageClick;

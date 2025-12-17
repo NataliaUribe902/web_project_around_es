@@ -80,7 +80,7 @@ const cardsSection = new Section(
 );
 
 const editProfilePopup = new PopupWithForm("#edit-popup", (formData) => {
-  api
+  return api
     .updateUserInfo({
       name: formData.name,
       about: formData.description,
@@ -94,12 +94,13 @@ const editProfilePopup = new PopupWithForm("#edit-popup", (formData) => {
     })
     .catch(console.log);
 });
+
 editProfilePopup.setEventListeners();
 
 const addCardPopup = new PopupWithForm("#new-card-popup", (formData) => {
-  api
+  return api
     .addCard({
-      name: formData["place-name"],
+      name: formData.name,
       link: formData.link,
     })
     .then((cardData) => {
@@ -108,7 +109,23 @@ const addCardPopup = new PopupWithForm("#new-card-popup", (formData) => {
     })
     .catch(console.log);
 });
+
 addCardPopup.setEventListeners();
+
+const editAvatarPopup = new PopupWithForm("#edit-avatar-popup", (formData) => {
+  api
+    .updateAvatar(formData.avatar)
+    .then((userData) => {
+      profileImage.src = userData.avatar;
+      editAvatarPopup.close();
+    })
+    .catch(console.log)
+    .finally(() => {
+      editAvatarPopup.renderLoading(false);
+    });
+});
+
+editAvatarPopup.setEventListeners();
 
 document
   .querySelector(".profile__edit-button")
@@ -124,6 +141,12 @@ document.querySelector(".profile__add-button").addEventListener("click", () => {
   addCardPopup.open();
 });
 
+document
+  .querySelector(".profile__avatar-edit")
+  .addEventListener("click", () => {
+    editAvatarPopup.open();
+  });
+
 const selectors = {
   formSelector: ".popup__form",
   inputSelector: ".popup__input",
@@ -138,23 +161,15 @@ document.querySelectorAll(selectors.formSelector).forEach((formElement) => {
   validator.enableValidation();
 });
 
-const editAvatarPopup = new PopupWithForm("#edit-avatar-popup", (formData) => {
-  api
-    .updateAvatar(formData.avatar)
-    .then((userData) => {
-      profileImage.src = userData.avatar;
-      editAvatarPopup.close();
+const handleProfileFormSubmit = (formData) => {
+  return api
+    .setUserInfo(formData)
+    .then((data) => {
+      userInfo.setUserInfo(data);
+      editProfilePopup.close();
     })
-    .catch(console.log);
-});
-
-editAvatarPopup.setEventListeners();
-
-document
-  .querySelector(".profile__avatar-edit")
-  .addEventListener("click", () => {
-    editAvatarPopup.open();
-  });
+    .catch((err) => console.log(err));
+};
 
 api
   .getUserInfo()
