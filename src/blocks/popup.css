@@ -131,6 +131,10 @@
   margin: 0;
 }
 
+#delete-card-popup .popup__content {
+  min-height: 181px;
+}
+
 @media screen and (max-width: 544px) {
   .popup {
     bottom: 112px;

@@ -1,4 +1,5 @@
 import Api from "../components/Api.js";
+import { PopupWithConfirmation } from "../components/PopupWithConfirmation.js";
 import {
   profileDescription,
   profileImage,
@@ -10,6 +11,8 @@ import { PopupWithImage } from "../components/PopupWithImage.js";
 import { PopupWithForm } from "../components/PopupWithForm.js";
 import { UserInfo } from "../components/UserInfo.js";
 import { FormValidator } from "../components/FormValidator.js";
+
+let currentUserId;
 
 const api = new Api({
   baseUrl: "https://around-api.es.tripleten-services.com/v1",
@@ -27,15 +30,42 @@ const userInfo = new UserInfo({
 const imagePopup = new PopupWithImage("#image-popup");
 imagePopup.setEventListeners();
 
-function createCard(name, link) {
+const deleteCardPopup = new PopupWithConfirmation("#delete-card-popup");
+deleteCardPopup.setEventListeners();
+
+function createCard(data) {
   const card = new Card(
-    name,
-    link,
+    { ...data, userId: currentUserId },
     "#template__cards",
-    (cardName, cardLink) => {
-      imagePopup.open(cardName, cardLink);
+
+    (name, link) => {
+      imagePopup.open(name, link);
+    },
+
+    (cardId, isLiked) => {
+      const request = isLiked ? api.removeLike(cardId) : api.addLike(cardId);
+
+      request
+        .then((res) => {
+          card.setLikeState(res.isLiked);
+        })
+        .catch(console.log);
+    },
+
+    (cardId) => {
+      deleteCardPopup.open();
+      deleteCardPopup.setSubmitAction(() => {
+        api
+          .deleteCard(cardId)
+          .then(() => {
+            card.remove();
+            deleteCardPopup.close();
+          })
+          .catch(console.log);
+      });
     }
   );
+
   return card.getView();
 }
 
@@ -43,12 +73,12 @@ const cardsSection = new Section(
   {
     items: [],
     renderer: (item) => {
-      const cardElement = createCard(item.name, item.link);
-      cardsSection.addItem(cardElement);
+      cardsSection.addItem(createCard(item));
     },
   },
   ".cards__list"
 );
+
 const editProfilePopup = new PopupWithForm("#edit-popup", (formData) => {
   api
     .updateUserInfo({
@@ -64,8 +94,8 @@ const editProfilePopup = new PopupWithForm("#edit-popup", (formData) => {
     })
     .catch(console.log);
 });
-
 editProfilePopup.setEventListeners();
+
 const addCardPopup = new PopupWithForm("#new-card-popup", (formData) => {
   api
     .addCard({
@@ -73,14 +103,11 @@ const addCardPopup = new PopupWithForm("#new-card-popup", (formData) => {
       link: formData.link,
     })
     .then((cardData) => {
-      const cardElement = createCard(cardData.name, cardData.link);
-      cardsSection.addItem(cardElement);
-
+      cardsSection.addItem(createCard(cardData));
       addCardPopup.close();
     })
     .catch(console.log);
 });
-
 addCardPopup.setEventListeners();
 
 document
@@ -110,9 +137,11 @@ document.querySelectorAll(selectors.formSelector).forEach((formElement) => {
   const validator = new FormValidator(selectors, formElement);
   validator.enableValidation();
 });
+
 api
   .getUserInfo()
   .then((userData) => {
+    currentUserId = userData._id;
     profileTitle.textContent = userData.name;
     profileDescription.textContent = userData.about;
     profileImage.src = userData.avatar;
@@ -123,8 +152,7 @@ api
   .getCards()
   .then((cards) => {
     cards.forEach((item) => {
-      const cardElement = createCard(item.name, item.link);
-      cardsSection.addItem(cardElement);
+      cardsSection.addItem(createCard(item));
     });
   })
   .catch(console.log);
